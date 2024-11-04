@@ -15,13 +15,19 @@ public:
     Node* right;
     int leftch;
     int rightch;
+    int sumL;
+    int sumR;
+    int sum;
     Node(int val1)
     {
         val = val1;
         left = 0;
         right = 0;
-        leftch = 0;
-        rightch = 0;
+        leftch = -1;
+        rightch = -1;
+        sumL = 0;
+        sumR = 0;
+        sum = val1;
     }
     ~Node() {};
 };
@@ -191,66 +197,143 @@ private:
         }
     }
 
-    void leftobhodspr(Node* head, int& maxhod)
+    void leftobhodspr(Node* head, int& maxhod, int& minsum)
     {
         Node* mov = head;
         if (mov->left != 0)
         {
-            leftobhodspr(mov->left, maxhod);
+            leftobhodspr(mov->left, maxhod, minsum);
             if (mov->left->leftch < mov->left->rightch)
             {
-                mov->leftch = mov->left->leftch + 1;
+                if(mov->left->leftch > 0)
+                {
+                    mov->leftch = mov->left->leftch + 1;
+                }
+                else if(mov->left->rightch > 0)
+                {
+                    mov->leftch = mov->left->rightch + 1;
+                }
+                else
+                {
+                    mov->leftch = 1;
+                }
+                if(mov->left->right!=nullptr)
+                {
+                    mov->sumL += min(mov->left->sumL, mov->left->sumR) + mov->left->val;
+                    mov->sum += mov->sumL;
+                }
+                else
+                {
+                    mov->sumL += mov->left->sumL + mov->left->val;
+                    mov->sum += mov->sumL;
+                }
             }
             else
             {
-                mov->leftch = mov->left->rightch + 1;
+                if(mov->left->rightch > 0)
+                {
+                    mov->leftch = mov->left->rightch + 1;
+                }
+                else  if (mov->left->leftch > 0)
+                {
+                    mov->leftch = mov->left->leftch + 1;
+                }
+                else
+                {
+                    mov->leftch = 1;
+                }
+                if (mov->left->right != nullptr)
+                {
+                    mov->sumL += min(mov->left->sumL, mov->left->sumR) + mov->left->val;
+                    mov->sum += mov->sumL;
+                }
+                else
+                {
+                    mov->sumL += mov->left->sumL + mov->left->val;
+                    mov->sum += mov->sumL;
+                }
             }
-
         }
         if (mov->right != 0)
         {
-            leftobhodspr(mov->right, maxhod);
+            leftobhodspr(mov->right, maxhod, minsum);
             if (mov->right->leftch < mov->right->rightch)
             {
-                mov->rightch = mov->right->leftch + 1;
+                if(mov->right->leftch > 0)
+                {
+                    mov->rightch = mov->right->leftch + 1;
+                }
+                else if (mov->right->rightch > 0)
+                {
+                    mov->rightch = mov->right->rightch + 1;
+                }
+                else
+                {
+                    mov->rightch = 1;
+                }
+                if(mov->right->left!=nullptr)
+                {
+                    mov->sumR += min(mov->right->sumL, mov->right->sumR) + mov->right->val;
+                    mov->sum += mov->sumR;
+                }
+                else
+                {
+                    mov->sumR += mov->right->sumR + mov->right->val;
+                    mov->sum += mov->sumR;
+                }
             }
             else
             {
-                mov->rightch = mov->right->rightch + 1;
+                if(mov->right->rightch > 0)
+                {
+                    mov->rightch = mov->right->rightch + 1;
+                }
+                else if (mov->right->leftch > 0)
+                {
+                    mov->rightch = mov->right->leftch + 1;
+                }
+                else
+                {
+                    mov->rightch = 1;
+                }
+                if (mov->right->left != nullptr)
+                {
+                    mov->sumR += min(mov->right->sumL, mov->right->sumR) + mov->right->val;
+                    mov->sum += mov->sumR;
+                }
+                else
+                {
+                    mov->sumR += mov->right->sumR + mov->right->val;
+                    mov->sum += mov->sumR;
+                }
             }
 
         }
-        if ((mov->leftch != 0 && mov->rightch != 0) && (mov->leftch + mov->rightch < maxhod)) maxhod = mov->leftch + mov->rightch;
+        if ((mov->leftch > 0 && mov->rightch > 0) && (mov->leftch + mov->rightch < maxhod)) 
+        {
+            maxhod = mov->leftch + mov->rightch;
+            minsum = min(minsum, mov->sum);
+        }
     }
 
-    void leftobhodspr1(Node* head, vector<Node*>& toPop, int maxhod)
+    void leftobhodspr1(Node* head, vector<Node*>& toPop, int maxhod, int minsum)
     {
-        Node* mov = head;
-        if (mov->left != 0)
+        if (head == nullptr)return;
+        if ((head->leftch + head->rightch == maxhod) && (head->sum == minsum))
         {
-            leftobhodspr1(mov->left, toPop, maxhod);
-            if (mov->left->leftch + mov->left->rightch == maxhod)
-            {
-                toPop.push_back(mov->left);
-            }
+            toPop.push_back(head);
         }
-        if (mov->right != 0)
-        {
-            leftobhodspr1(mov->right, toPop, maxhod);
-            if (mov->right->leftch + mov->right->rightch == maxhod)
-            {
-                toPop.push_back(mov->right);
-            }
-        }
+        leftobhodspr1(head->left,toPop,maxhod,minsum);
+        leftobhodspr1(head->right,toPop,maxhod,minsum);
     }
     public:
-        void leftobhodspr(int& maxhod)
+        void leftobhodspr(int& maxhod, int& minsum)
         {
-            leftobhodspr(root, maxhod);
+            leftobhodspr(root, maxhod, minsum);
         }
-        void leftobhodspr1(vector<Node*>& toPop, int maxhod)
+        void leftobhodspr1(vector<Node*>& toPop, int maxhod, int minsum)
         {
-            leftobhodspr1(root, toPop, maxhod);
+            leftobhodspr1(root, toPop, maxhod, minsum);
         }
         void AddNode(int v) {
             root = AddNode(root, v);
@@ -277,7 +360,7 @@ private:
                         {
                             Node* node = toPop[0]->left;
                             Node* node_otec = toPop[0];
-                            for (int i = 1; i < tmp; i++)
+                            for (int i = 2; i < tmp; i++)
                             {
                                 node_otec = node;
                                 if (node->left != nullptr && node->right != nullptr)
@@ -317,7 +400,7 @@ private:
                         {
                             Node* node = toPop[0]->right;
                             Node* node_otec = toPop[0];
-                            for (int i = 1; i < tmp; i++)
+                            for (int i = 2; i < tmp; i++)
                             {
                                 node_otec = node;
                                 if (node->left != nullptr && node->right != nullptr)
@@ -485,9 +568,10 @@ int main()
         T.AddNode(tmp);
     }
     int maxhod = INT_MAX;
-    T.leftobhodspr(maxhod);
+    int minsum = INT_MAX;
+    T.leftobhodspr(maxhod,minsum);
     vector<Node*> toPop;
-    T.leftobhodspr1(toPop, maxhod);
+    T.leftobhodspr1(toPop, maxhod, minsum);
     T.Result(toPop);
     T.printBST();
 
