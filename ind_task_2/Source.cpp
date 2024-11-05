@@ -222,7 +222,7 @@ private:
                     mov->sumL += min(mov->left->sumL, mov->left->sumR) + mov->left->val;
                     mov->sum += mov->sumL;
                 }
-                else if (mov->left->left != nullptr)
+                else if(mov->left->left != nullptr)
                 {
                     mov->sumL += mov->left->sumL + mov->left->val;
                     mov->sum += mov->sumL;
@@ -235,207 +235,105 @@ private:
             }
             else
             {
-                if (mov->left->rightch > 0)
-                {
-                    mov->leftch = mov->left->rightch + 1;
-                }
-                else  if (mov->left->leftch > 0)
-                {
-                    mov->leftch = mov->left->leftch + 1;
-                }
-                else
-                {
-                    mov->leftch = 1;
-                }
-                if (mov->left->right != nullptr && mov->left->left != nullptr)
-                {
-                    mov->sumL += min(mov->left->sumL, mov->left->sumR) + mov->left->val;
-                    mov->sum += mov->sumL;
-                }
-                else if (mov->left->left != nullptr)
-                {
-                    mov->sumL += mov->left->sumL + mov->left->val;
-                    mov->sum += mov->sumL;
-                }
-                else
-                {
-                    mov->sumL += mov->left->sumR + mov->left->val;
-                    mov->sum += mov->sumL;
-                }
+                mov->leftch = mov->left->rightch + 1;
             }
+
         }
         if (mov->right != 0)
         {
             leftobhodspr(mov->right, maxhod, minsum);
             if (mov->right->leftch < mov->right->rightch)
             {
-                if (mov->right->leftch > 0)
-                {
-                    mov->rightch = mov->right->leftch + 1;
-                }
-                else if (mov->right->rightch > 0)
-                {
-                    mov->rightch = mov->right->rightch + 1;
-                }
-                else
-                {
-                    mov->rightch = 1;
-                }
-                if (mov->right->left != nullptr && mov->right->right != nullptr)
-                {
-                    mov->sumR += min(mov->right->sumL, mov->right->sumR) + mov->right->val;
-                    mov->sum += mov->sumR;
-                }
-                else if (mov->right->right != nullptr)
-                {
-                    mov->sumR += mov->right->sumR + mov->right->val;
-                    mov->sum += mov->sumR;
-                }
-                else
-                {
-                    mov->sumR += mov->right->sumL + mov->right->val;
-                    mov->sum += mov->sumR;
-                }
+                mov->rightch = mov->right->leftch + 1;
             }
             else
             {
-                if (mov->right->rightch > 0)
-                {
-                    mov->rightch = mov->right->rightch + 1;
-                }
-                else if (mov->right->leftch > 0)
-                {
-                    mov->rightch = mov->right->leftch + 1;
-                }
-                else
-                {
-                    mov->rightch = 1;
-                }
-                if (mov->right->left != nullptr && mov->right->right != nullptr)
-                {
-                    mov->sumR += min(mov->right->sumL, mov->right->sumR) + mov->right->val;
-                    mov->sum += mov->sumR;
-                }
-                else if (mov->right->right != nullptr)
-                {
-                    mov->sumR += mov->right->sumR + mov->right->val;
-                    mov->sum += mov->sumR;
-                }
-                else
-                {
-                    mov->sumR += mov->right->sumL + mov->right->val;
-                    mov->sum += mov->sumR;
-                }
+                mov->rightch = mov->right->rightch + 1;
             }
 
         }
-        if ((mov->leftch > 0 && mov->rightch > 0) && (mov->leftch + mov->rightch < maxhod))
-        {
-            maxhod = mov->leftch + mov->rightch;
-            minsum = min(minsum, mov->sum);
-        }
+        if ((mov->leftch != 0 && mov->rightch != 0) && (mov->leftch + mov->rightch < maxhod)) maxhod = mov->leftch + mov->rightch;
     }
 
-    void leftobhodspr1(Node* head, vector<Node*>& toPop, int maxhod, int minsum)
+    void leftobhodspr1(Node* head, vector<Node*>& toPop, int maxhod)
     {
-        if (head == nullptr)return;
-        if ((head->leftch + head->rightch == maxhod) && (head->sum == minsum))
+        Node* mov = head;
+        if (mov->left != 0)
         {
-            toPop.push_back(head);
-        }
-        leftobhodspr1(head->left, toPop, maxhod, minsum);
-        leftobhodspr1(head->right, toPop, maxhod, minsum);
-    }
-public:
-    void leftobhodspr(int& maxhod, int& minsum)
-    {
-        leftobhodspr(root, maxhod, minsum);
-    }
-    void leftobhodspr1(vector<Node*>& toPop, int maxhod, int minsum)
-    {
-        leftobhodspr1(root, toPop, maxhod, minsum);
-    }
-    void AddNode(int v) {
-        root = AddNode(root, v);
-    }
-    void printBST() {
-        printBST(root);
-    }
-    void Result(vector<Node*>& toPop)
-    {
-        if (toPop.size() == 0) return;
-        if (toPop.size() == 1)
-        {
-            if ((toPop[0]->leftch + toPop[0]->rightch) % 2 == 0)
+            leftobhodspr1(mov->left, toPop, maxhod);
+            if (mov->left->leftch + mov->left->rightch == maxhod)
             {
-                if (toPop[0]->leftch == toPop[0]->rightch)
+                toPop.push_back(mov->left);
+            }
+        }
+        if (mov->right != 0)
+        {
+            leftobhodspr1(mov->right, toPop, maxhod);
+            if (mov->right->leftch + mov->right->rightch == maxhod)
+            {
+                toPop.push_back(mov->right);
+            }
+        }
+    }
+    public:
+        void leftobhodspr(int& maxhod)
+        {
+            leftobhodspr(root, maxhod);
+        }
+        void leftobhodspr1(vector<Node*>& toPop, int maxhod)
+        {
+            leftobhodspr1(root, toPop, maxhod);
+        }
+        void AddNode(int v) {
+            root = AddNode(root, v);
+        }
+        void printBST() {
+            printBST(root);
+        }
+        void Result(vector<Node*>& toPop)
+        {
+            if (toPop.size() == 0) return;
+            if (toPop.size() == 1)
+            {
+                if ((toPop[0]->leftch + toPop[0]->rightch) % 2 == 0)
                 {
-                    Remove(root, toPop[0]);
-                    return;
-                }
-                else
-                {
-                    int tmp = (toPop[0]->leftch + toPop[0]->rightch) / 2;
-                    if (toPop[0]->leftch > toPop[0]->rightch)
+                    if (toPop[0]->leftch == toPop[0]->rightch)
                     {
-                        Node* node = toPop[0]->left;
-                        Node* node_otec = toPop[0];
-                        for (int i = 2; i < tmp; i++)
-                        {
-                            node_otec = node;
-                            if (node->left != nullptr && node->right != nullptr)
-                            {
-                                int l_min = node->left->leftch;
-                                if (l_min == -1 || (node->left->rightch > 0 && node->left->rightch < node->left->leftch))
-                                {
-                                    l_min = node->left->rightch;
-                                }
-                                int r_min = node->right->leftch;
-                                if (r_min == -1 || (node->right->rightch > 0 && node->right->rightch < node->right->leftch))
-                                {
-                                    r_min = node->right->rightch;
-                                }
-                                if (l_min <= r_min)
-                                {
-                                    node = node->left;
-                                }
-                                else
-                                {
-                                    node = node->right;
-                                }
-                            }
-                            else if (node->left != nullptr)
-                            {
-                                node = node->left;
-                            }
-                            else
-                            {
-                                node = node->right;
-                            }
-                        }
-                        Remove(root, node, node_otec);
+                        Remove(root, toPop[0]);
                         return;
                     }
                     else
                     {
-                        Node* node = toPop[0]->right;
-                        Node* node_otec = toPop[0];
-                        for (int i = 2; i < tmp; i++)
+                        int tmp = (toPop[0]->leftch + toPop[0]->rightch) / 2;
+                        if (toPop[0]->leftch > toPop[0]->rightch)
                         {
-                            node_otec = node;
-                            if (node->left != nullptr && node->right != nullptr)
+                            Node* node = toPop[0]->left;
+                            Node* node_otec = toPop[0];
+                            for (int i = 1; i < tmp; i++)
                             {
-                                int l_min = node->left->leftch;
-                                if (l_min == -1 || (node->left->rightch > 0 && node->left->rightch < node->left->leftch))
+                                node_otec = node;
+                                if (node->left != nullptr && node->right != nullptr)
                                 {
-                                    l_min = node->left->rightch;
+                                    int l_min = node->left->leftch;
+                                    if (l_min == 0 || (node->left->rightch != 0 && node->left->rightch < node->left->leftch))
+                                    {
+                                        l_min = node->left->rightch;
+                                    }
+                                    int r_min = node->right->leftch;
+                                    if (r_min == 0 || (node->right->rightch != 0 && node->right->rightch < node->right->leftch))
+                                    {
+                                        r_min = node->right->rightch;
+                                    }
+                                    if (l_min < r_min)
+                                    {
+                                        node = node->left;
+                                    }
+                                    else
+                                    {
+                                        node = node->right;
+                                    }
                                 }
-                                int r_min = node->right->leftch;
-                                if (r_min == -1 || (node->right->rightch > 0 && node->right->rightch < node->right->leftch))
-                                {
-                                    r_min = node->right->rightch;
-                                }
-                                if (l_min <= r_min)
+                                else if (node->left != nullptr)
                                 {
                                     node = node->left;
                                 }
@@ -444,107 +342,107 @@ public:
                                     node = node->right;
                                 }
                             }
-                            else if (node->left != nullptr)
-                            {
-                                node = node->left;
-                            }
-                            else
-                            {
-                                node = node->right;
-                            }
+                            Remove(root, node, node_otec);
+                            return;
                         }
-                        Remove(root, node, node_otec);
-                        return;
+                        else
+                        {
+                            Node* node = toPop[0]->right;
+                            Node* node_otec = toPop[0];
+                            for (int i = 1; i < tmp; i++)
+                            {
+                                node_otec = node;
+                                if (node->left != nullptr && node->right != nullptr)
+                                {
+                                    int l_min = node->left->leftch;
+                                    if (l_min == 0 || (node->left->rightch != 0 && node->left->rightch < node->left->leftch))
+                                    {
+                                        l_min = node->left->rightch;
+                                    }
+                                    int r_min = node->right->leftch;
+                                    if (r_min == 0 || (node->right->rightch != 0 && node->right->rightch < node->right->leftch))
+                                    {
+                                        r_min = node->right->rightch;
+                                    }
+                                    if (l_min < r_min)
+                                    {
+                                        node = node->left;
+                                    }
+                                    else
+                                    {
+                                        node = node->right;
+                                    }
+                                }
+                                else if (node->left != nullptr)
+                                {
+                                    node = node->left;
+                                }
+                                else
+                                {
+                                    node = node->right;
+                                }
+                            }
+                            Remove(root, node, node_otec);
+                            return;
+                        }
                     }
+                }
+                else
+                {
+                    return;
                 }
             }
             else
             {
-                return;
-            }
-        }
-        else
-        {
-            Node* toDel = nullptr;
-            int q = INT_MAX;
-            for (int i = 0; i < toPop.size(); i++)
-            {
-                if (toPop[i]->val < q)
+                Node* toDel = nullptr;
+                int q = INT_MAX;
+                for (int i=0;i<toPop.size();i++)
                 {
-                    q = toPop[i]->val;
-                    toDel = toPop[i];
-                }
-            }
-            if ((toDel->leftch + toDel->rightch) % 2 == 0)
-            {
-                if (toDel->leftch == toDel->rightch)
-                {
-                    Remove(root, toDel);
-                    return;
-                }
-                else
-                {
-                    int tmp = (toDel->leftch + toDel->rightch) / 2;
-                    if (toDel->leftch > toDel->rightch)
+                    if (toPop[i]->val < q)
                     {
-                        Node* node = toDel->left;
-                        Node* node_otec = toDel;
-                        for (int i = 2; i < tmp; i++)
-                        {
-                            node_otec = node;
-                            if (node->left != nullptr && node->right != nullptr)
-                            {
-                                int l_min = node->left->leftch;
-                                if (l_min == -1 || (node->left->rightch > 0 && node->left->rightch < node->left->leftch))
-                                {
-                                    l_min = node->left->rightch;
-                                }
-                                int r_min = node->right->leftch;
-                                if (r_min == -1 || (node->right->rightch > 0 && node->right->rightch < node->right->leftch))
-                                {
-                                    r_min = node->right->rightch;
-                                }
-                                if (l_min <= r_min)
-                                {
-                                    node = node->left;
-                                }
-                                else
-                                {
-                                    node = node->right;
-                                }
-                            }
-                            else if (node->left != nullptr)
-                            {
-                                node = node->left;
-                            }
-                            else
-                            {
-                                node = node->right;
-                            }
-                        }
-                        Remove(root, node, node_otec);
+                        q = toPop[i]->val;
+                        toDel = toPop[i];
+                    }
+                }
+                if ((toDel->leftch + toDel->rightch) % 2 == 0)
+                {
+                    if (toDel->leftch == toDel->rightch)
+                    {
+                        Remove(root, toDel);
                         return;
                     }
                     else
                     {
-                        Node* node = toDel->right;
-                        Node* node_otec = toDel;
-                        for (int i = 2; i < tmp; i++)
+                        int tmp = (toDel->leftch + toDel->rightch) / 2;
+                        if (toDel->leftch > toDel->rightch)
                         {
-                            node_otec = node;
-                            if (node->left != nullptr && node->right != nullptr)
+                            Node* node = toDel->left;
+                            Node* node_otec = toDel;
+                            for (int i = 1; i < tmp; i++)
                             {
-                                int l_min = node->left->leftch;
-                                if (l_min == -1 || (node->left->rightch > 0 && node->left->rightch < node->left->leftch))
+                                node_otec = node;
+                                if (node->left != nullptr && node->right != nullptr)
                                 {
-                                    l_min = node->left->rightch;
+                                    int l_min = node->left->leftch;
+                                    if (l_min == 0 || (node->left->rightch != 0 && node->left->rightch < node->left->leftch))
+                                    {
+                                        l_min = node->left->rightch;
+                                    }
+                                    int r_min = node->right->leftch;
+                                    if (r_min == 0 || (node->right->rightch != 0 && node->right->rightch < node->right->leftch))
+                                    {
+                                        r_min = node->right->rightch;
+                                    }
+                                    if (l_min < r_min)
+                                    {
+                                        node = node->left;
+                                    }
+                                    else
+                                    {
+                                        node = node->right;
+                                    }
                                 }
-                                int r_min = node->right->leftch;
-                                if (r_min == -1 || (node->right->rightch > 0 && node->right->rightch < node->right->leftch))
-                                {
-                                    r_min = node->right->rightch;
-                                }
-                                if (l_min <= r_min)
+                                else if (node->left != nullptr)
                                 {
                                     node = node->left;
                                 }
@@ -553,26 +451,57 @@ public:
                                     node = node->right;
                                 }
                             }
-                            else if (node->left != nullptr)
-                            {
-                                node = node->left;
-                            }
-                            else
-                            {
-                                node = node->right;
-                            }
+                            Remove(root, node, node_otec);
+                            return;
                         }
-                        Remove(root, node, node_otec);
-                        return;
+                        else
+                        {
+                            Node* node = toDel->right;
+                            Node* node_otec = toDel;
+                            for (int i = 1; i < tmp; i++)
+                            {
+                                node_otec = node;
+                                if (node->left != nullptr && node->right != nullptr)
+                                {
+                                    int l_min = node->left->leftch;
+                                    if (l_min == 0 || (node->left->rightch != 0 && node->left->rightch < node->left->leftch))
+                                    {
+                                        l_min = node->left->rightch;
+                                    }
+                                    int r_min = node->right->leftch;
+                                    if (r_min == 0 || (node->right->rightch != 0 && node->right->rightch < node->right->leftch))
+                                    {
+                                        r_min = node->right->rightch;
+                                    }
+                                    if (l_min < r_min)
+                                    {
+                                        node = node->left;
+                                    }
+                                    else
+                                    {
+                                        node = node->right;
+                                    }
+                                }
+                                else if (node->left != nullptr)
+                                {
+                                    node = node->left;
+                                }
+                                else
+                                {
+                                    node = node->right;
+                                }
+                            }
+                            Remove(root, node, node_otec);
+                            return;
+                        }
                     }
                 }
-            }
-            else
-            {
-                return;
+                else
+                {
+                    return;
+                }
             }
         }
-    }
 
     ~BST() {}
 };
@@ -588,8 +517,7 @@ int main()
         T.AddNode(tmp);
     }
     int maxhod = INT_MAX;
-    int minsum = INT_MAX;
-    T.leftobhodspr(maxhod, minsum);
+    T.leftobhodspr(maxhod);
     vector<Node*> toPop;
     T.leftobhodspr1(toPop, maxhod, minsum);
     T.Result(toPop);
