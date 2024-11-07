@@ -10,15 +10,15 @@ ofstream out("out.txt");
 class Node
 {
 public:
-    int val;
+    long long val;
     Node* left;
     Node* right;
-    int leftch;
-    int rightch;
-    int sumL;
-    int sumR;
-    int sum;
-    Node(int val1)
+    long long leftch;
+    long long rightch;
+    long long sumL;
+    long long sumR;
+    long long sum;
+    Node(long long val1)
     {
         val = val1;
         left = 0;
@@ -37,7 +37,7 @@ class BST
 private:
     Node* root = nullptr;
 
-    Node* AddNode(Node* node, int v)
+    Node* AddNode(Node* node, long long v)
     {
         if (node == nullptr) {
             node = new Node(v);
@@ -51,7 +51,7 @@ private:
         return node;
     }
 
-    Node* Search_otec(Node* root, int v) {
+    Node* Search_otec(Node* root, long long v) {
         Node* tmp = root;
         Node* tmp1 = nullptr;
         while (tmp != nullptr && tmp->val != v) {
@@ -197,7 +197,7 @@ private:
         }
     }
 
-    void leftobhodspr(Node* head, int& maxhod, int& minsum)
+    void leftobhodspr(Node* head, long long& maxhod, long long& minsum)
     {
         Node* mov = head;
         if (mov->left != 0)
@@ -329,14 +329,14 @@ private:
             }
 
         }
-        if ((mov->leftch > 0 && mov->rightch > 0) && (mov->leftch + mov->rightch < maxhod))
+        if ((mov->leftch > 0 && mov->rightch > 0) && (mov->leftch + mov->rightch <= maxhod))
         {
             maxhod = mov->leftch + mov->rightch;
             minsum = min(minsum, mov->sum);
         }
     }
 
-    void leftobhodspr1(Node* head, vector<Node*>& toPop, int maxhod, int minsum)
+    void leftobhodspr1(Node* head, vector<Node*>& toPop, long long maxhod, long long minsum)
     {
         if (head == nullptr)return;
         if ((head->leftch + head->rightch == maxhod) && (head->sum == minsum))
@@ -347,15 +347,15 @@ private:
         leftobhodspr1(head->right, toPop, maxhod, minsum);
     }
 public:
-    void leftobhodspr(int& maxhod, int& minsum)
+    void leftobhodspr(long long& maxhod, long long& minsum)
     {
         leftobhodspr(root, maxhod, minsum);
     }
-    void leftobhodspr1(vector<Node*>& toPop, int maxhod, int minsum)
+    void leftobhodspr1(vector<Node*>& toPop, long long maxhod, long long minsum)
     {
         leftobhodspr1(root, toPop, maxhod, minsum);
     }
-    void AddNode(int v) {
+    void AddNode(long long v) {
         root = AddNode(root, v);
     }
     void printBST() {
@@ -375,22 +375,22 @@ public:
                 }
                 else
                 {
-                    int tmp = (toPop[0]->leftch + toPop[0]->rightch) / 2;
+                    long long tmp = (toPop[0]->leftch + toPop[0]->rightch) / 2;
                     if (toPop[0]->leftch > toPop[0]->rightch)
                     {
                         Node* node = toPop[0]->left;
                         Node* node_otec = toPop[0];
-                        for (int i = 2; i < tmp; i++)
+                        for (long long i = 2; i < tmp; i++)
                         {
                             node_otec = node;
                             if (node->left != nullptr && node->right != nullptr)
                             {
-                                int l_min = node->left->leftch;
+                                long long l_min = node->left->leftch;
                                 if (l_min == -1 || (node->left->rightch > 0 && node->left->rightch < node->left->leftch))
                                 {
                                     l_min = node->left->rightch;
                                 }
-                                int r_min = node->right->leftch;
+                                long long r_min = node->right->leftch;
                                 if (r_min == -1 || (node->right->rightch > 0 && node->right->rightch < node->right->leftch))
                                 {
                                     r_min = node->right->rightch;
@@ -420,17 +420,17 @@ public:
                     {
                         Node* node = toPop[0]->right;
                         Node* node_otec = toPop[0];
-                        for (int i = 2; i < tmp; i++)
+                        for (long long i = 2; i < tmp; i++)
                         {
                             node_otec = node;
                             if (node->left != nullptr && node->right != nullptr)
                             {
-                                int l_min = node->left->leftch;
+                                long long l_min = node->left->leftch;
                                 if (l_min == -1 || (node->left->rightch > 0 && node->left->rightch < node->left->leftch))
                                 {
                                     l_min = node->left->rightch;
                                 }
-                                int r_min = node->right->leftch;
+                                long long r_min = node->right->leftch;
                                 if (r_min == -1 || (node->right->rightch > 0 && node->right->rightch < node->right->leftch))
                                 {
                                     r_min = node->right->rightch;
@@ -466,8 +466,8 @@ public:
         else
         {
             Node* toDel = nullptr;
-            int q = INT_MAX;
-            for (int i = 0; i < toPop.size(); i++)
+            long long q = LLONG_MAX;
+            for (long long i = 0; i < toPop.size(); i++)
             {
                 if (toPop[i]->val < q)
                 {
@@ -484,22 +484,22 @@ public:
                 }
                 else
                 {
-                    int tmp = (toDel->leftch + toDel->rightch) / 2;
+                    long long tmp = (toDel->leftch + toDel->rightch) / 2;
                     if (toDel->leftch > toDel->rightch)
                     {
                         Node* node = toDel->left;
                         Node* node_otec = toDel;
-                        for (int i = 2; i < tmp; i++)
+                        for (long long i = 2; i < tmp; i++)
                         {
                             node_otec = node;
                             if (node->left != nullptr && node->right != nullptr)
                             {
-                                int l_min = node->left->leftch;
+                                long long l_min = node->left->leftch;
                                 if (l_min == -1 || (node->left->rightch > 0 && node->left->rightch < node->left->leftch))
                                 {
                                     l_min = node->left->rightch;
                                 }
-                                int r_min = node->right->leftch;
+                                long long r_min = node->right->leftch;
                                 if (r_min == -1 || (node->right->rightch > 0 && node->right->rightch < node->right->leftch))
                                 {
                                     r_min = node->right->rightch;
@@ -529,17 +529,17 @@ public:
                     {
                         Node* node = toDel->right;
                         Node* node_otec = toDel;
-                        for (int i = 2; i < tmp; i++)
+                        for (long long i = 2; i < tmp; i++)
                         {
                             node_otec = node;
                             if (node->left != nullptr && node->right != nullptr)
                             {
-                                int l_min = node->left->leftch;
+                                long long l_min = node->left->leftch;
                                 if (l_min == -1 || (node->left->rightch > 0 && node->left->rightch < node->left->leftch))
                                 {
                                     l_min = node->left->rightch;
                                 }
-                                int r_min = node->right->leftch;
+                                long long r_min = node->right->leftch;
                                 if (r_min == -1 || (node->right->rightch > 0 && node->right->rightch < node->right->leftch))
                                 {
                                     r_min = node->right->rightch;
@@ -581,14 +581,14 @@ int main()
     ifstream in("in.txt");
 
     BST T;
-    int tmp = 0;
+    long long tmp = 0;
     while (!in.eof())
     {
         in >> tmp;
         T.AddNode(tmp);
     }
-    int maxhod = INT_MAX;
-    int minsum = INT_MAX;
+    long long maxhod = LLONG_MAX;
+    long long minsum = LLONG_MAX;
     T.leftobhodspr(maxhod, minsum);
     vector<Node*> toPop;
     T.leftobhodspr1(toPop, maxhod, minsum);
